@@ -27,6 +27,8 @@ function App() {
     return blocks
   })
 
+  const [emptyBlock, setEmptyBlock] = useState(() => blocks.find((b) => b.value === ''));
+
   const setCustomBlocks = () => {
     const customBlocks = [
       '10',  '3',  '7', '6',
@@ -36,6 +38,7 @@ function App() {
     ]
 
     const newBlocks = [...blocks.map((b) => ({ ...b }))];
+    const newEmptyBlock = newBlocks.find((b) => b.value === '');
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -47,6 +50,7 @@ function App() {
     }
 
     setBlocks(newBlocks);
+    setEmptyBlock(newEmptyBlock);
   }
 
   return (
@@ -55,14 +59,16 @@ function App() {
         {blocks.map((block) => (() => {
           const handleClick = useMemo(() => {
             if (block.value === '') return
-            const newBlocks = [...blocks.map((b) => ({ ...b }))]
-            const emptyBlock = newBlocks.find((b) => b.value === '')
-  
-            if (block.y === emptyBlock.y) {
-              return () => {
-                const minX = Math.min(block.x, emptyBlock.x)
-                const maxX = Math.max(block.x, emptyBlock.x)
-                const mov = block.x < emptyBlock.x ? 1 : -1
+            if (block.x !== emptyBlock.x && block.y !== emptyBlock.y) return
+
+            return () => {
+              const newBlocks = [...blocks.map((b) => ({ ...b }))]
+              const newEmptyBlock = newBlocks.find((b) => b.value === '')
+    
+              if (block.y === newEmptyBlock.y) {
+                const minX = Math.min(block.x, newEmptyBlock.x)
+                const maxX = Math.max(block.x, newEmptyBlock.x)
+                const mov = block.x < newEmptyBlock.x ? 1 : -1
     
                 let filteredBlocks = newBlocks.filter((b) => b.y === block.y)
                 filteredBlocks = filteredBlocks.filter((b) => b.x >= minX && b.x <= maxX)
@@ -71,17 +77,13 @@ function App() {
                   b.x += mov
                 })
     
-                emptyBlock.x = block.x
-    
-                setBlocks(newBlocks)
+                newEmptyBlock.x = block.x
               }
-            }
-  
-            if (block.x === emptyBlock.x) {
-              return () => {
-                const minY = Math.min(block.y, emptyBlock.y)
-                const maxY = Math.max(block.y, emptyBlock.y)
-                const mov = block.y < emptyBlock.y ? 1 : -1
+    
+              if (block.x === newEmptyBlock.x) {
+                const minY = Math.min(block.y, newEmptyBlock.y)
+                const maxY = Math.max(block.y, newEmptyBlock.y)
+                const mov = block.y < newEmptyBlock.y ? 1 : -1
                 
                 let filteredBlocks = newBlocks.filter((b) => b.x === block.x)
                 filteredBlocks = filteredBlocks.filter((b) => b.y >= minY && b.y <= maxY)
@@ -90,11 +92,13 @@ function App() {
                   b.y += mov
                 })
     
-                emptyBlock.y = block.y
-    
-                setBlocks(newBlocks)
+                newEmptyBlock.y = block.y
               }
+
+              setBlocks(newBlocks)
+              setEmptyBlock(newEmptyBlock)
             }
+
           }, [blocks])
 
           const isDisabled = !handleClick;
@@ -106,9 +110,8 @@ function App() {
               type='button'
               className={clsx(
                 'absolute w-20 h-20 text-white flex justify-center items-center text-4xl select-none',
-                'border border-amber-400',
+                'border-2 border-amber-400',
                 'transition-all',
-                !isDisabled && 'hover:bg-gray-900',
               )}
               style={{
                 left: 80 * block.x,
@@ -125,7 +128,7 @@ function App() {
 
       <button
         type='button'
-        className='absolute bottom-2 right-2'
+        className='absolute bottom-2 right-2 select-none'
         onClick={setCustomBlocks}
       >
         <span className='text-2xl'>🎲</span>
