@@ -83,7 +83,7 @@ function App() {
               key={block.value}
               type='button'
               className={clsx(
-                'absolute w-20 h-20 text-white flex justify-center items-center text-4xl',
+                'absolute w-20 h-20 text-white flex justify-center items-center text-4xl select-none',
                 'border border-amber-400',
                 'transition-all',
                 !isDisabled && 'hover:bg-gray-900',
