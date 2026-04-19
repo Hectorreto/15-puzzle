@@ -27,7 +27,7 @@ function App() {
     return blocks
   })
 
-  const [emptyBlock, setEmptyBlock] = useState(() => blocks.find((b) => b.value === ''));
+  const emptyBlock = useMemo(() => blocks.find((b) => b.value === ''), [blocks]);
 
   const setCustomBlocks = () => {
     const customBlocks = [
@@ -38,7 +38,6 @@ function App() {
     ]
 
     const newBlocks = [...blocks.map((b) => ({ ...b }))];
-    const newEmptyBlock = newBlocks.find((b) => b.value === '');
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -50,7 +49,6 @@ function App() {
     }
 
     setBlocks(newBlocks);
-    setEmptyBlock(newEmptyBlock);
   }
 
   return (
@@ -96,9 +94,7 @@ function App() {
               }
 
               setBlocks(newBlocks)
-              setEmptyBlock(newEmptyBlock)
             }
-
           }, [blocks])
 
           const isDisabled = !handleClick;
