@@ -27,6 +27,28 @@ function App() {
     return blocks
   })
 
+  const setCustomBlocks = () => {
+    const customBlocks = [
+      '10',  '3',  '7', '6',
+       '2',  '1', '15', '9',
+      '14', '12',  '',  '8',
+      '13',  '5', '11', '4',
+    ]
+
+    const newBlocks = [...blocks.map((b) => ({ ...b }))];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        const index = i * 4 + j;
+        newBlocks[index].value = customBlocks[index];
+        newBlocks[index].x = j;
+        newBlocks[index].y = i;
+      }
+    }
+
+    setBlocks(newBlocks);
+  }
+
   return (
     <div className='h-dvh bg-black flex justify-center items-center'>
       <div className='w-80 h-80 border border-amber-400 relative'>
@@ -100,6 +122,14 @@ function App() {
           )
         })())}
       </div>
+
+      <button
+        type='button'
+        className='absolute bottom-2 right-2'
+        onClick={setCustomBlocks}
+      >
+        <span className='text-2xl'>🎲</span>
+      </button>
     </div>
   )
 }
