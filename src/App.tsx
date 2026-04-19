@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 type Block = {
   x: number,
@@ -27,65 +27,78 @@ function App() {
     return blocks
   })
 
-  const handleClick = (selectedBlock: Block) => {
-    if (selectedBlock.value === '') return
-    const newBlocks = [...blocks.map((block) => ({ ...block }))]
-    const emptyBlock = newBlocks.find((block) => block.value === '')
-
-    if (selectedBlock.y === emptyBlock.y) {
-      const minX = Math.min(selectedBlock.x, emptyBlock.x)
-      const maxX = Math.max(selectedBlock.x, emptyBlock.x)
-      const mov = selectedBlock.x < emptyBlock.x ? 1 : -1
-      
-      let filteredBlocks = newBlocks.filter((block) => block.y === selectedBlock.y)
-      filteredBlocks = filteredBlocks.filter((block) => block.x >= minX && block.x <= maxX)
-
-      filteredBlocks.forEach((block) => {
-        block.x += mov
-      })
-
-      emptyBlock.x = selectedBlock.x
-    }
-
-    if (selectedBlock.x === emptyBlock.x) {
-      const minY = Math.min(selectedBlock.y, emptyBlock.y)
-      const maxY = Math.max(selectedBlock.y, emptyBlock.y)
-      const mov = selectedBlock.y < emptyBlock.y ? 1 : -1
-
-      let filteredBlocks = newBlocks.filter((block) => block.x === selectedBlock.x)
-      filteredBlocks = filteredBlocks.filter((block) => block.y >= minY && block.y <= maxY)
-
-      filteredBlocks.forEach((block) => {
-        block.y += mov
-      })
-
-      emptyBlock.y = selectedBlock.y
-    }
-
-    setBlocks(newBlocks)
-  }
-
   return (
     <div className='h-dvh bg-black flex justify-center items-center'>
       <div className='w-80 h-80 border border-amber-400 relative'>
-        {blocks.map((block) => (
-          <button
-            key={block.value}
-            className={clsx(
-              'absolute w-20 h-20 text-white flex justify-center items-center text-4xl',
-              block.value !== '' && 'border border-amber-400 hover:bg-gray-900',
-              'transition-all'
-            )}
-            type='button'
-            style={{
-              left: 80 * block.x,
-              top: 80 * block.y,
-            }}
-            onClick={() => handleClick(block)}
-          >
-            {block.value}
-          </button>
-        ))}
+        {blocks.map((block) => (() => {
+          const handleClick = useMemo(() => {
+            if (block.value === '') return
+            const newBlocks = [...blocks.map((b) => ({ ...b }))]
+            const emptyBlock = newBlocks.find((b) => b.value === '')
+  
+            if (block.y === emptyBlock.y) {
+              return () => {
+                const minX = Math.min(block.x, emptyBlock.x)
+                const maxX = Math.max(block.x, emptyBlock.x)
+                const mov = block.x < emptyBlock.x ? 1 : -1
+    
+                let filteredBlocks = newBlocks.filter((b) => b.y === block.y)
+                filteredBlocks = filteredBlocks.filter((b) => b.x >= minX && b.x <= maxX)
+    
+                filteredBlocks.forEach((b) => {
+                  b.x += mov
+                })
+    
+                emptyBlock.x = block.x
+    
+                setBlocks(newBlocks)
+              }
+            }
+  
+            if (block.x === emptyBlock.x) {
+              return () => {
+                const minY = Math.min(block.y, emptyBlock.y)
+                const maxY = Math.max(block.y, emptyBlock.y)
+                const mov = block.y < emptyBlock.y ? 1 : -1
+                
+                let filteredBlocks = newBlocks.filter((b) => b.x === block.x)
+                filteredBlocks = filteredBlocks.filter((b) => b.y >= minY && b.y <= maxY)
+                
+                filteredBlocks.forEach((b) => {
+                  b.y += mov
+                })
+    
+                emptyBlock.y = block.y
+    
+                setBlocks(newBlocks)
+              }
+            }
+          }, [blocks])
+
+          const isDisabled = !handleClick;
+          if (block.value === '') return null;
+
+          return (
+            <button
+              key={block.value}
+              type='button'
+              className={clsx(
+                'absolute w-20 h-20 text-white flex justify-center items-center text-4xl',
+                'border border-amber-400',
+                'transition-all',
+                !isDisabled && 'hover:bg-gray-900',
+              )}
+              style={{
+                left: 80 * block.x,
+                top: 80 * block.y,
+              }}
+              onClick={handleClick}
+              disabled={isDisabled}
+            >
+              {block.value}
+            </button>
+          )
+        })())}
       </div>
     </div>
   )
