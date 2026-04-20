@@ -27,7 +27,7 @@ function App() {
     return blocks
   })
 
-  const emptyBlock = useMemo(() => blocks.find((b) => b.value === ''), [blocks]);
+  const emptyBlock = useMemo(() => blocks.find((b) => b.value === ''), [blocks])!;
 
   const setCustomBlocks = () => {
     const customBlocks = [
@@ -61,7 +61,7 @@ function App() {
 
             return () => {
               const newBlocks = [...blocks.map((b) => ({ ...b }))]
-              const newEmptyBlock = newBlocks.find((b) => b.value === '')
+              const newEmptyBlock = newBlocks.find((b) => b.value === '')!
     
               if (block.y === newEmptyBlock.y) {
                 const minX = Math.min(block.x, newEmptyBlock.x)

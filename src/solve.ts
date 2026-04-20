@@ -41,7 +41,7 @@ export const solve = (grid: number[][]): string[] => {
   let visitedFromEnd = new Map<string, string[]>();
 
   while (queue.length > 0) {
-    const { grid, steps, type, x, y } = queue.shift();
+    const { grid, steps, type, x, y } = queue.shift()!;
     const gridString = grid.toString();
 
     if (steps.length > cnt) {
@@ -54,7 +54,7 @@ export const solve = (grid: number[][]): string[] => {
       visitedFromStart.set(gridString, steps);
 
       if (visitedFromEnd.has(gridString)) {
-        return [...steps, ...visitedFromEnd.get(gridString)];
+        return [...steps, ...visitedFromEnd.get(gridString)!];
       };
     }
 
@@ -63,7 +63,7 @@ export const solve = (grid: number[][]): string[] => {
       visitedFromEnd.set(gridString, steps);
 
       if (visitedFromStart.has(gridString)) {
-        return [...visitedFromStart.get(gridString), ...steps];
+        return [...visitedFromStart.get(gridString)!, ...steps];
       }
     }
 
@@ -89,51 +89,51 @@ export const solve = (grid: number[][]): string[] => {
 }
 
 // Test 1: ok!
-const testGrid1 = [
-  [ 0,  2,  3,  4],
-  [ 1,  6,  7,  8],
-  [ 5, 10, 11, 12],
-  [ 9, 13, 14, 15],
-]
+// const testGrid = [
+//   [ 0,  2,  3,  4],
+//   [ 1,  6,  7,  8],
+//   [ 5, 10, 11, 12],
+//   [ 9, 13, 14, 15],
+// ]
 
 // Test 2: ok!
-const testGrid2 = [
-  [ 0,  9,  3,  4],
-  [13,  1,  6,  7],
-  [ 5,  2, 10, 11],
-  [14, 15, 12,  8],
-]
+// const testGrid = [
+//   [ 0,  9,  3,  4],
+//   [13,  1,  6,  7],
+//   [ 5,  2, 10, 11],
+//   [14, 15, 12,  8],
+// ]
 
 // Test 3: too slow!
-const testGrid3 = [
-  [10,  3,  7,  6],
-  [ 2,  1, 15,  9],
-  [14, 12,  0,  8],
-  [13,  5, 11,  4],
-]
+// const testGrid = [
+//   [10,  3,  7,  6],
+//   [ 2,  1, 15,  9],
+//   [14, 12,  0,  8],
+//   [13,  5, 11,  4],
+// ]
 
 // Test 4: too slow!
-const testGrid4 = [
-  [ 1,  2,  3,   4],
-  [10,  7,  9,   0],
-  [14, 12,  6, 15],
-  [13,  5,  8, 11],
-]
+// const testGrid = [
+//   [ 1,  2,  3,   4],
+//   [10,  7,  9,   0],
+//   [14, 12,  6, 15],
+//   [13,  5,  8, 11],
+// ]
 
 // Test 5: too slow!
-const testGrid5 = [
-  [ 1,  2,  3,  4],
-  [ 5,  6,  7,  8],
-  [ 0, 12,  9, 10],
-  [14, 13, 15, 11],
-]
+// const testGrid = [
+//   [ 1,  2,  3,  4],
+//   [ 5,  6,  7,  8],
+//   [ 0, 12,  9, 10],
+//   [14, 13, 15, 11],
+// ]
 
-const testGridX = [
-  [ 1,  2,  3,  4],
-  [ 5,  6,  7,  8],
-  [ 9, 10, 11, 12],
-  [13, 15, 14,  0],
-]
+// const testGridX = [
+//   [ 1,  2,  3,  4],
+//   [ 5,  6,  7,  8],
+//   [ 9, 10, 11, 12],
+//   [13, 15, 14,  0],
+// ]
 
-const solution = solve(testGrid5);
-console.log(solution);
+// const solution = solve(testGrid);
+// console.log(solution);
